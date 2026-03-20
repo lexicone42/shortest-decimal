@@ -18,7 +18,19 @@ This covers **all** algorithms in the Schubfach/shortest-decimal family:
 - [Errol](https://cseweb.ucsd.edu/~lerner/papers/fp-printing-popl16.pdf) (Andrysco et al., POPL 2016)
 - Any future algorithm satisfying the interface
 
-Zero `sorry`s. Zero axioms. All proofs checked by Lean's kernel.
+All proofs checked by Lean's kernel. No `native_decide`. Supports **two float formats** (F64 binary64, F32 binary32) and **all five IEEE 754 rounding modes**.
+
+### Rounding mode coverage
+
+| Mode | F64 | F32 | Sorrys |
+|------|-----|-----|--------|
+| Round-to-nearest-even (RNE) | Fully proven | Fully proven | 0 |
+| Round-toward-zero (RTZ) | Fully proven | — | 0 |
+| Round-ties-to-away (RNA) | Fully proven | — | 0 |
+| Round-toward-positive (RTP) | Partial (3 sorrys in ceiling case) | — | 1 |
+| Round-toward-negative (RTN) | Partial (3 sorrys in ceiling case) | — | 2 |
+
+The 3 remaining sorrys are in the "ceiling direction" of the RTP/RTN interval soundness proofs — structurally identical to the proven floor-direction cases but with flipped rounding.
 
 ## The key insight
 
