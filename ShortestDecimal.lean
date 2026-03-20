@@ -10,3 +10,4 @@ import ShortestDecimal.Interval.Interval
 import ShortestDecimal.Roundtrip.FormatParse
 import ShortestDecimal.Generic.Algorithm
 import ShortestDecimal.Generic.Roundtrip
+import ShortestDecimal.Examples.RyuInstance

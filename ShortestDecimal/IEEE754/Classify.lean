@@ -44,7 +44,7 @@ def isSubnormal (x : F64) : Prop := x.classify = .subnormal
 def isNormal (x : F64) : Prop := x.classify = .normal
 
 /-- Finite F64 values have biased exponent < 2047. -/
-theorem finite_implies_exp_lt (x : F64) (hfin : x.isFinite) :
+@[simp] theorem finite_implies_exp_lt (x : F64) (hfin : x.isFinite) :
     x.biasedExp.val < 2047 := by
   unfold isFinite classify at hfin
   have hbound := x.biasedExp.isLt
@@ -56,7 +56,7 @@ theorem finite_implies_exp_lt (x : F64) (hfin : x.isFinite) :
       · simp at h <;> omega
   }
 
-theorem exp_lt_implies_finite (x : F64) (h : x.biasedExp.val < 2047) :
+@[simp] theorem exp_lt_implies_finite (x : F64) (h : x.biasedExp.val < 2047) :
     x.isFinite := by
   unfold isFinite classify
   by_cases he : x.biasedExp.val = 0

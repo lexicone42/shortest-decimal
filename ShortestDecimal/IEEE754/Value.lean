@@ -43,12 +43,12 @@ def toRat (x : F64) : ℚ :=
       signMul * sig / (2 ^ (-exp).toNat : ℚ)
 
 /-- Zero has rational value 0. -/
-theorem toRat_posZero : posZero.toRat = 0 := by
+@[simp] theorem toRat_posZero : posZero.toRat = 0 := by
   simp [toRat, posZero, isFinite, classify, effectiveSignificand,
         effectiveBinaryExp, expBias, mantBits]
 
 /-- Negative zero also has rational value 0. -/
-theorem toRat_negZero : negZero.toRat = 0 := by
+@[simp] theorem toRat_negZero : negZero.toRat = 0 := by
   simp [toRat, negZero, isFinite, classify, effectiveSignificand,
         effectiveBinaryExp, expBias, mantBits]
 

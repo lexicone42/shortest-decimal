@@ -50,4 +50,10 @@ def WellFormed (d : Decimal) : Prop :=
   (d.digits ≠ 0 → d.digits % 10 ≠ 0) ∧
   (d.digits = 0 → d.exponent = 0)
 
+@[simp] theorem toRat_zero_digits (s : Bool) (e : Int) : (Decimal.mk s 0 e).toRat = 0 := by
+  simp [toRat]
+
+@[simp] theorem toF64_zero_digits (s : Bool) : (Decimal.mk s 0 0).toF64 = ⟨s, ⟨0, by omega⟩, ⟨0, by omega⟩⟩ := by
+  simp [toF64]
+
 end Decimal
