@@ -15,17 +15,17 @@ theorem parseDigitChar_ofNat (d : Nat) (hd : d < 10) :
     parseDigitChar (Char.ofNat (d + 48)) = some d := by
   have : d = 0 ∨ d = 1 ∨ d = 2 ∨ d = 3 ∨ d = 4 ∨
          d = 5 ∨ d = 6 ∨ d = 7 ∨ d = 8 ∨ d = 9 := by omega
-  rcases this with h|h|h|h|h|h|h|h|h|h <;> subst h <;> native_decide
+  rcases this with h|h|h|h|h|h|h|h|h|h <;> subst h <;> decide
 
-theorem parseDigitChar_e : parseDigitChar 'e' = none := by native_decide
-theorem parseDigitChar_minus : parseDigitChar '-' = none := by native_decide
-theorem parseDigitChar_dot : parseDigitChar '.' = none := by native_decide
+theorem parseDigitChar_e : parseDigitChar 'e' = none := by decide
+theorem parseDigitChar_minus : parseDigitChar '-' = none := by decide
+theorem parseDigitChar_dot : parseDigitChar '.' = none := by decide
 
 theorem digit_char_ne_minus (d : Nat) (hd : d < 10) :
     Char.ofNat (d + 48) ≠ '-' := by
   have : d = 0 ∨ d = 1 ∨ d = 2 ∨ d = 3 ∨ d = 4 ∨
          d = 5 ∨ d = 6 ∨ d = 7 ∨ d = 8 ∨ d = 9 := by omega
-  rcases this with h|h|h|h|h|h|h|h|h|h <;> subst h <;> native_decide
+  rcases this with h|h|h|h|h|h|h|h|h|h <;> subst h <;> decide
 
 /-! ## Layer 2: natToDigitsAux accumulator spec -/
 
@@ -323,7 +323,7 @@ theorem format_parse_roundtrip (d : Decimal) (hwf : d.WellFormed) :
   by_cases hd0 : digits = 0
   · subst hd0
     have := hwf_exp rfl; subst this
-    cases sign <;> native_decide
+    cases sign <;> decide
   · -- digits > 0: setup
     set allDigits := natToDigits digits with h_ad
     have had_ne : allDigits ≠ [] := h_ad ▸ natToDigits_ne_nil digits

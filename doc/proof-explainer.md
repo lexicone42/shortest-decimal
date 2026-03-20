@@ -116,19 +116,18 @@ Extending to binary32 (float), binary128 (quad), or binary16 (half) would requir
 
 The proof applies to the *mathematical model*, which faithfully mirrors IEEE 754 binary64. The gap between model and implementation is the standard gap in formal verification — bridging it would require tools like [Aeneas](https://github.com/AeneasVerif/aeneas) (for Rust) or [CompCert](https://compcert.org/) (for C).
 
-### 6. `native_decide` is used for finite-case proofs
+### 6. No `native_decide` — kernel-only proofs
 
-Six instances of `native_decide` appear in `FormatParse.lean`, all for concrete character comparisons on finite domains (digits 0-9, sign characters). These rely on Lean's trusted code generator for evaluation. They are sound (the `Decidable` instance ensures kernel verification of the decision procedure), but they add the Lean compiler to the trust base. Running `lean4checker` on the compiled `.olean` files provides additional assurance.
+All finite-case proofs (character comparisons for digits 0-9, sign characters) use `decide` rather than `native_decide`. This means the entire proof chain is checked by Lean's kernel alone — the compiler is NOT in the trust base.
 
 ## The trust base
 
 The proof relies on:
 1. **Lean 4's type theory kernel** — the core checker that validates all proofs
-2. **Lean 4's compiler** — for `native_decide` evaluation (6 instances)
-3. **Mathlib** — for rational number arithmetic (`ℚ`), floor/ceiling operations, positivity tactics
-4. **The F64 model** — faithfully mirrors IEEE 754 binary64 by construction (dependent types enforce bit widths)
+2. **Mathlib** — for rational number arithmetic (`ℚ`), floor/ceiling operations, positivity tactics
+3. **The F64 model** — faithfully mirrors IEEE 754 binary64 by construction (dependent types enforce bit widths)
 
-No external axioms are introduced. No `sorry`. No `partial` definitions.
+No `native_decide`. No external axioms. No `sorry`. No `partial` definitions. The trust base is minimal: the Lean kernel + Mathlib.
 
 ## References
 
