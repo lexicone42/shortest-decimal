@@ -50,7 +50,7 @@ structure DecimalConversionAlgorithm where
       This is the core obligation: it says the Decimal represents a value that
       rounds back to x under round-to-nearest-even. -/
   in_interval : ∀ (x : F64) (hfin : x.isFinite) (hne : x.toRat ≠ 0),
-    (Ryu.schubfachInterval x hfin).contains (convert x hfin).toRat
+    (ShortestDecimal.schubfachInterval x hfin).contains (convert x hfin).toRat
   /-- For zero floats, the output has zero digits and matching sign. -/
   zero_digits : ∀ (x : F64) (hfin : x.isFinite) (h0 : x.toRat = 0),
     (convert x hfin).digits = 0

@@ -67,13 +67,13 @@ theorem generic_full_roundtrip (alg : DecimalConversionAlgorithm)
       intro hd0
       have := digits_zero_toRat_zero _ hd0
       rw [this] at h_in
-      have ⟨hlo, _⟩ := Ryu.schubfach_abs_interval_pos x hfin h0
-      unfold Ryu.AcceptanceInterval.contains at h_in
+      have ⟨hlo, _⟩ := ShortestDecimal.schubfach_abs_interval_pos x hfin h0
+      unfold ShortestDecimal.AcceptanceInterval.contains at h_in
       cases hs : x.sign <;> simp [hs] at hlo h_in
       · obtain ⟨h, _⟩ := h_in; split at h <;> linarith
       · obtain ⟨_, h⟩ := h_in; split at h <;> linarith
     simp [Decimal.toF64, hd_ne]
-    exact Ryu.schubfach_interval_correct x hfin h0 _ h_in
+    exact ShortestDecimal.schubfach_interval_correct x hfin h0 _ h_in
 
 /-- Corollary: the algorithm's Decimal, converted to F64, gives x. -/
 theorem generic_decimal_roundtrip (alg : DecimalConversionAlgorithm)

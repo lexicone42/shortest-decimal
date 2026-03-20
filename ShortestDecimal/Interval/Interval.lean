@@ -1,5 +1,5 @@
 /-
-  Ryu/Interval.lean
+  Interval/Interval.lean
 
   The acceptance interval: for a finite F64 x, the set of rationals
   that round to x under round-to-nearest-even.
@@ -15,7 +15,7 @@ set_option exponentiation.threshold 2048
 set_option maxRecDepth 8192
 set_option linter.unusedSimpArgs false
 
-namespace Ryu
+namespace ShortestDecimal
 
 /-- An interval with boundary inclusivity flags. -/
 structure AcceptanceInterval where
@@ -1151,4 +1151,4 @@ theorem schubfach_interval_correct (x : F64) (hfin : x.isFinite)
       exact decide_eq_true this
   exact interval_round_core x hfin hne q hq_ne hdec hq
 
-end Ryu
+end ShortestDecimal
