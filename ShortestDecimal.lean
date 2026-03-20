@@ -5,6 +5,8 @@ import ShortestDecimal.IEEE754.RoundToNearest
 import ShortestDecimal.IEEE754.RoundProof
 import ShortestDecimal.IEEE754.RoundTowardZero
 import ShortestDecimal.IEEE754.RoundProofRTZ
+import ShortestDecimal.IEEE754.RoundTiesAway
+import ShortestDecimal.IEEE754.RoundProofRNA
 import ShortestDecimal.IEEE754.Float32
 import ShortestDecimal.IEEE754.Classify32
 import ShortestDecimal.IEEE754.Value32
@@ -15,12 +17,15 @@ import ShortestDecimal.Decimal.Format
 import ShortestDecimal.Decimal.Parse
 import ShortestDecimal.Interval.Interval
 import ShortestDecimal.Interval.IntervalRTZ
+import ShortestDecimal.Interval.IntervalRNA
 import ShortestDecimal.Interval.Interval32
 import ShortestDecimal.Roundtrip.FormatParse
 import ShortestDecimal.Generic.Algorithm
 import ShortestDecimal.Generic.AlgorithmRTZ
+import ShortestDecimal.Generic.AlgorithmRNA
 import ShortestDecimal.Generic.Algorithm32
 import ShortestDecimal.Generic.Roundtrip
 import ShortestDecimal.Generic.RoundtripRTZ
+import ShortestDecimal.Generic.RoundtripRNA
 import ShortestDecimal.Generic.Roundtrip32
 import ShortestDecimal.Examples.RyuInstance
