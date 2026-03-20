@@ -3,11 +3,17 @@ import ShortestDecimal.IEEE754.Classify
 import ShortestDecimal.IEEE754.Value
 import ShortestDecimal.IEEE754.RoundToNearest
 import ShortestDecimal.IEEE754.RoundProof
+import ShortestDecimal.IEEE754.Float32
+import ShortestDecimal.IEEE754.Classify32
+import ShortestDecimal.IEEE754.Value32
+import ShortestDecimal.IEEE754.RoundToNearest32
+import ShortestDecimal.IEEE754.RoundProof32
 import ShortestDecimal.Decimal.Decimal
 import ShortestDecimal.Decimal.Format
 import ShortestDecimal.Decimal.Parse
 import ShortestDecimal.Interval.Interval
 import ShortestDecimal.Roundtrip.FormatParse
 import ShortestDecimal.Generic.Algorithm
+import ShortestDecimal.Generic.Algorithm32
 import ShortestDecimal.Generic.Roundtrip
 import ShortestDecimal.Examples.RyuInstance
