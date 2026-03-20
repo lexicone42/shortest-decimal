@@ -12,8 +12,10 @@ import ShortestDecimal.Decimal.Decimal
 import ShortestDecimal.Decimal.Format
 import ShortestDecimal.Decimal.Parse
 import ShortestDecimal.Interval.Interval
+import ShortestDecimal.Interval.Interval32
 import ShortestDecimal.Roundtrip.FormatParse
 import ShortestDecimal.Generic.Algorithm
 import ShortestDecimal.Generic.Algorithm32
 import ShortestDecimal.Generic.Roundtrip
+import ShortestDecimal.Generic.Roundtrip32
 import ShortestDecimal.Examples.RyuInstance
