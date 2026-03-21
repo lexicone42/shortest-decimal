@@ -51,8 +51,23 @@ theorem rtn_interval_correct (x : F64) (hfin : x.isFinite)
   unfold rtnInterval at hq
   cases hs : x.sign
   · -- Positive x: interval = RTZ interval
-    simp only [hs, ite_false] at hq
-    sorry
+    simp only [hs, Bool.false_eq_true, ↓reduceIte] at hq
+    have hq_pos : ¬(q < 0) := by
+      have ⟨habs_lo_pos, _⟩ := rtz_abs_interval_pos x hfin hne
+      simp only [hs, Bool.false_eq_true, ↓reduceIte] at habs_lo_pos
+      -- habs_lo_pos : 0 < (rtzInterval x hfin).low
+      unfold AcceptanceInterval.contains at hq
+      obtain ⟨hlo, _⟩ := hq
+      split at hlo <;> linarith
+    have hq_ne : q ≠ 0 := by
+      intro heq; subst heq
+      have ⟨habs_lo_pos, _⟩ := rtz_abs_interval_pos x hfin hne
+      simp only [hs, Bool.false_eq_true, ↓reduceIte] at habs_lo_pos
+      unfold AcceptanceInterval.contains at hq
+      obtain ⟨hlo, _⟩ := hq
+      split at hlo <;> linarith
+    rw [roundTowardNeg_eq_rtz_of_pos q hq_ne hq_pos]
+    exact rtz_interval_correct x hfin hne q hq
   · -- Negative x: ceiling-based proof (mirror of RTP positive)
     simp only [hs, ite_true] at hq
     sorry
