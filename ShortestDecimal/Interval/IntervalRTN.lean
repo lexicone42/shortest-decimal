@@ -21,16 +21,14 @@ set_option linter.unusedSimpArgs false
 
 namespace ShortestDecimal
 
-/-- The RTN acceptance interval. -/
+/-- The RTN acceptance interval. Uses scaleQ directly (not a local let)
+    to ensure hypotheses after unfold match scaleQ terms in proofs. -/
 def rtnInterval (x : F64) (hfin : x.isFinite) : AcceptanceInterval :=
   if x.sign then
     let mf := x.effectiveSignificand
     let e2 := x.effectiveBinaryExp - 2
     let delta : Nat := if x.mantissa.val = 0 ∧ x.biasedExp.val > 1 then 2 else 4
-    let scaleN (n : Nat) : ℚ :=
-      if e2 ≥ 0 then (n : ℚ) * (2 : ℚ) ^ e2.toNat
-      else (n : ℚ) / (2 : ℚ) ^ (-e2).toNat
-    { low := -(scaleN (4 * mf)), high := -(scaleN (4 * mf - delta)),
+    { low := -(scaleQ (4 * mf) e2), high := -(scaleQ (4 * mf - delta) e2),
       lowInclusive := true, highInclusive := false }
   else
     rtzInterval x hfin
@@ -66,19 +64,22 @@ private theorem rtn_neg_abs_bounds (x : F64) (hfin : x.isFinite) (hne : x.toRat 
   unfold AcceptanceInterval.contains at hq
   simp only [Bool.true_eq_false, ↓reduceIte] at hq
   obtain ⟨hlo, hhi⟩ := hq
-  -- hlo : -(scaleN (4*mf)) ≤ q
-  -- hhi : q < -(scaleN (4*mf - delta))
+  -- Now hlo and hhi are in terms of scaleQ (not inlined scaleN)
   have hmf_pos := rtp_effSig_pos x hfin hne
-  have hd_le : (if x.mantissa.val = 0 ∧ x.biasedExp.val > 1 then 2 else 4 : Nat) ≤ 4 * x.effectiveSignificand := by
-    split <;> omega
-  -- The bounds from the interval unfold to scaleQ terms after let-inlining.
-  -- This is a purely mechanical lemma (sign analysis on interval bounds).
-  -- The mathematical content is trivial: q is between two negative values,
-  -- so q < 0 and |q| is between the absolute values of the bounds.
-  -- TODO: the proof requires case-splitting on e2 ≥ 0 to normalize the
-  -- inlined scaleN to scaleQ. Structurally identical to the sign analysis
-  -- in interval_abs_bounds (Interval.lean) but for the RTN interval shape.
-  sorry
+  set delta := (if x.mantissa.val = 0 ∧ x.biasedExp.val > 1 then 2 else 4 : Nat)
+  have hscale4_pos := scaleQ_pos (4 * x.effectiveSignificand) (by omega) (x.effectiveBinaryExp - 2)
+  -- Simplify the if-then-else in hhi (highInclusive = false)
+  simp only [Bool.false_eq_true, ↓reduceIte] at hhi
+  -- Now hhi : q < -(scaleQ (4*mf - delta) e2)
+  -- hlo : -(scaleQ (4*mf) e2) ≤ q
+  -- Since scaleQ(4*mf) > 0, -(scaleQ(4*mf)) < 0, and q ≥ -(scaleQ(4*mf)), and q < -(scaleQ(4*mf-delta)) ≤ 0
+  have hq_neg : q < 0 := by
+    have : scaleQ (4 * x.effectiveSignificand - delta) (x.effectiveBinaryExp - 2) ≥ 0 := by
+      unfold scaleQ; split <;> positivity
+    linarith
+  refine ⟨hq_neg, ?_, ?_⟩
+  · rw [abs_of_neg hq_neg]; linarith
+  · rw [abs_of_neg hq_neg]; linarith
 
 /-- The core of the RTN negative case: use the same machinery as RTP positive. -/
 private theorem rtn_neg_core (x : F64) (hfin : x.isFinite)
