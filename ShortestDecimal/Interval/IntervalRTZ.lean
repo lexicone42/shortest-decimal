@@ -19,7 +19,7 @@ set_option linter.unusedSimpArgs false
 namespace ShortestDecimal
 
 -- Abbreviation to reduce casting pain
-private def scaleQ (n : Nat) (e2 : Int) : ℚ :=
+def scaleQ (n : Nat) (e2 : Int) : ℚ :=
   if e2 ≥ 0 then (n : ℚ) * (2 : ℚ) ^ e2.toNat
   else (n : ℚ) / (2 : ℚ) ^ (-e2).toNat
 
@@ -40,12 +40,17 @@ private theorem rtz_effSig_pos (x : F64) (hfin : x.isFinite) (hne : x.toRat ≠ 
   have : x.effectiveSignificand = 0 := by omega
   exact hne (by unfold F64.toRat; rw [if_neg (not_not.mpr hfin)]; simp [this])
 
-private theorem scaleQ_pos (n : Nat) (hn : 0 < n) (e2 : Int) : 0 < scaleQ n e2 := by
+theorem scaleQ_pos (n : Nat) (hn : 0 < n) (e2 : Int) : 0 < scaleQ n e2 := by
   unfold scaleQ; split
   · exact mul_pos (by exact_mod_cast hn) (by positivity)
   · exact div_pos (by exact_mod_cast hn) (by positivity)
 
-private theorem scaleQ_lt (a b : Nat) (h : a < b) (e2 : Int) : scaleQ a e2 < scaleQ b e2 := by
+theorem scaleQ_le (a b : Nat) (h : a ≤ b) (e2 : Int) : scaleQ a e2 ≤ scaleQ b e2 := by
+  unfold scaleQ; split
+  · exact mul_le_mul_of_nonneg_right (by exact_mod_cast h) (by positivity)
+  · exact div_le_div_of_nonneg_right (by exact_mod_cast h) (by positivity)
+
+theorem scaleQ_lt (a b : Nat) (h : a < b) (e2 : Int) : scaleQ a e2 < scaleQ b e2 := by
   unfold scaleQ; split
   · exact mul_lt_mul_of_pos_right (by exact_mod_cast h) (by positivity)
   · exact div_lt_div_of_pos_right (by exact_mod_cast h) (by positivity)
@@ -221,7 +226,7 @@ private theorem rtz_abs_bounds (x : F64) (hfin : x.isFinite)
 
 /-! ## Threshold bounds -/
 
-private theorem scaleQ_ge_threshQ (mf : Nat) (be : Nat) (hmf : mf ≥ 2^52)
+theorem scaleQ_ge_threshQ (mf : Nat) (be : Nat) (hmf : mf ≥ 2^52)
     (hbe_ge : be ≥ 1) (hbe_lt : be < 2047) :
     F64.threshQ be ≤ scaleQ (4 * mf) ((be : Int) - 1077) := by
   unfold scaleQ
@@ -254,7 +259,7 @@ private theorem scaleQ_ge_threshQ (mf : Nat) (be : Nat) (hmf : mf ≥ 2^52)
             apply mul_le_mul_of_nonneg_right _ (by positivity)
             exact_mod_cast h4mf
 
-private theorem scaleQ_le_threshQ_succ (mf : Nat) (be : Nat)
+theorem scaleQ_le_threshQ_succ (mf : Nat) (be : Nat)
     (hmf : mf < 2^53) (hbe_ge : be ≥ 1) (hbe_lt : be < 2047) :
     scaleQ (4 * mf + 4) ((be : Int) - 1077) ≤ F64.threshQ (be + 1) := by
   unfold scaleQ
@@ -285,7 +290,7 @@ private theorem scaleQ_le_threshQ_succ (mf : Nat) (be : Nat)
           ≤ 2^55 * 2^(1023 - (be + 1)) := mul_le_mul_of_nonneg_right hw_le (by positivity)
         _ = 2^(1077 - be) := by rw [← pow_add]; congr 1; omega
 
-private theorem subnormal_le_threshQ1 (mf : Nat) (hmf : mf < 2^52) :
+theorem subnormal_le_threshQ1 (mf : Nat) (hmf : mf < 2^52) :
     scaleQ (4 * mf + 4) (-1076) ≤ F64.threshQ 1 := by
   unfold scaleQ
   simp only [show ¬((-1076 : Int) ≥ 0) from by omega, ↓reduceIte,
