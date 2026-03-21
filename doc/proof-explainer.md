@@ -92,20 +92,34 @@ The theorem says nothing about the output being *shortest*. An algorithm that al
 - **Scale-minimal**: the output is found at the coarsest decimal grid. Proven for Ryu in ryu-lean4 (`ryu_shortest`), but not part of this generic theorem.
 - **Digit-minimal**: the output has the fewest significant digits of any decimal in the interval. Not proven for any algorithm. The 2026 Champagne Gareau & Lemire survey found "none of the implementations surveyed consistently produced the shortest possible strings."
 
-### 3. Only round-to-nearest-even is covered
+### 3. All five IEEE 754 rounding modes are covered for F64
 
-The acceptance interval construction assumes IEEE 754 round-to-nearest-even (RNE) for both the forward (float-to-decimal) and inverse (decimal-to-float) conversions. Other rounding modes (toward-zero, ceiling, floor, ties-to-odd) would require different intervals and separate soundness proofs.
+The library now supports all five standard rounding modes for F64:
+- **Round-to-nearest-even (RNE)** — the default mode, used by most software
+- **Round-toward-zero (RTZ)** — truncation
+- **Round-ties-to-away (RNA)** — the "schoolbook" rounding rule
+- **Round-toward-positive (RTP)** — ceiling
+- **Round-toward-negative (RTN)** — floor
 
-Dragonbox supports 10+ rounding policies. Extending this library to cover them would require re-proving interval soundness for each mode (~1,100 lines each).
+Each mode has its own acceptance interval construction and soundness proof, its own rounding function and involution proof, and its own generic roundtrip theorem. All are fully proven with zero sorrys.
 
-### 4. Only binary64 (double precision) is modeled
+Dragonbox supports 10+ rounding policies. Additional modes beyond the IEEE 754 standard five (e.g., ties-to-odd) would require new interval soundness proofs.
 
-The `F64` type models IEEE 754 binary64 specifically:
+### 4. F64 and F32 are modeled
+
+The library models two IEEE 754 formats:
+
+**F64 (binary64)** — all five rounding modes:
 - 1 sign bit, 11 exponent bits, 52 mantissa bits
 - Biased exponent range: 0..2047
 - Special values: ±∞ (biasedExp=2047, mantissa=0), NaN (biasedExp=2047, mantissa≠0)
 
-Extending to binary32 (float), binary128 (quad), or binary16 (half) would require new `F32`/`F128`/`F16` types and re-proving the interval soundness with different constants.
+**F32 (binary32)** — RNE only:
+- 1 sign bit, 8 exponent bits, 23 mantissa bits
+- Biased exponent range: 0..255
+- Special values: ±∞ (biasedExp=255, mantissa=0), NaN (biasedExp=255, mantissa≠0)
+
+Extending to binary128 (quad) or binary16 (half) would require new types and re-proving the interval soundness with different constants.
 
 ### 5. No connection to hardware or Rust/C implementations
 

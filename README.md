@@ -63,24 +63,57 @@ To verify a new algorithm, provide these five obligations. The roundtrip theorem
 
 ```
 ShortestDecimal/
-├── IEEE754/                    # IEEE 754 binary64 model
+├── IEEE754/                    # IEEE 754 float models
 │   ├── Float64.lean            # F64 structure (sign, biasedExp, mantissa)
-│   ├── Classify.lean           # Float classification
+│   ├── Float32.lean            # F32 structure (binary32)
+│   ├── Classify.lean           # F64 float classification
+│   ├── Classify32.lean         # F32 float classification
 │   ├── Value.lean              # F64 → ℚ rational interpretation
-│   ├── RoundToNearest.lean     # ℚ → F64 rounding
-│   └── RoundProof.lean         # RNE(toRat(x)) = x (involution)
+│   ├── Value32.lean            # F32 → ℚ rational interpretation
+│   ├── RoundToNearest.lean     # ℚ → F64 rounding (RNE)
+│   ├── RoundToNearest32.lean   # ℚ → F32 rounding (RNE)
+│   ├── RoundTowardZero.lean    # ℚ → F64 rounding (RTZ)
+│   ├── RoundTiesAway.lean      # ℚ → F64 rounding (RNA)
+│   ├── RoundTowardPos.lean     # ℚ → F64 rounding (RTP)
+│   ├── RoundTowardNeg.lean     # ℚ → F64 rounding (RTN)
+│   ├── RoundProof.lean         # RNE(toRat(x)) = x for F64
+│   ├── RoundProof32.lean       # RNE(toRat(x)) = x for F32
+│   ├── RoundProofRTZ.lean      # RTZ(toRat(x)) = x for F64
+│   ├── RoundProofRNA.lean      # RNA(toRat(x)) = x for F64
+│   ├── RoundProofRTP.lean      # RTP(toRat(x)) = x for F64
+│   └── RoundProofRTN.lean      # RTN(toRat(x)) = x for F64
 ├── Decimal/                    # Decimal representation
 │   ├── Decimal.lean            # Decimal type + toRat/toF64
 │   ├── Format.lean             # Decimal → String (scientific notation)
 │   └── Parse.lean              # String → Decimal parser
 ├── Interval/                   # Acceptance interval
-│   └── Interval.lean           # Construction + soundness (~1,100 lines)
+│   ├── Interval.lean           # RNE interval for F64 (~1,150 lines)
+│   ├── Interval32.lean         # RNE interval for F32
+│   ├── IntervalRTZ.lean        # RTZ interval for F64
+│   ├── IntervalRNA.lean        # RNA interval for F64
+│   ├── IntervalRTP.lean        # RTP interval for F64
+│   ├── IntervalRTN.lean        # RTN interval for F64
+│   └── CeilHelper.lean         # Shared ceiling/floor lemmas
 ├── Roundtrip/                  # String roundtrip
 │   └── FormatParse.lean        # parse(format(d)) = d (~450 lines)
-└── Generic/                    # Algorithm-independent interface
-    ├── Algorithm.lean           # DecimalConversionAlgorithm structure
-    └── Roundtrip.lean           # generic_full_roundtrip theorem
+├── Generic/                    # Algorithm-independent interface
+│   ├── Algorithm.lean           # DecimalConversionAlgorithm (F64/RNE)
+│   ├── Algorithm32.lean         # DecimalConversionAlgorithm32 (F32/RNE)
+│   ├── AlgorithmRTZ.lean        # F64/RTZ algorithm interface
+│   ├── AlgorithmRNA.lean        # F64/RNA algorithm interface
+│   ├── AlgorithmRTP.lean        # F64/RTP algorithm interface
+│   ├── AlgorithmRTN.lean        # F64/RTN algorithm interface
+│   ├── Roundtrip.lean           # generic_full_roundtrip (F64/RNE)
+│   ├── Roundtrip32.lean         # generic_full_roundtrip32 (F32/RNE)
+│   ├── RoundtripRTZ.lean        # generic roundtrip (F64/RTZ)
+│   ├── RoundtripRNA.lean        # generic roundtrip (F64/RNA)
+│   ├── RoundtripRTP.lean        # generic roundtrip (F64/RTP)
+│   └── RoundtripRTN.lean        # generic roundtrip (F64/RTN)
+└── Examples/
+    └── RyuInstance.lean         # Example: Ryu instantiation sketch
 ```
+
+~7,848 lines of Lean. Zero `sorry`s. Zero axioms. Kernel-only trust base.
 
 ## Building
 
